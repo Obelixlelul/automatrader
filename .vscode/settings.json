@@ -1,0 +1,10 @@
+{
+  "workbench.colorCustomizations": {
+    "sideBar.foreground": "#b2b5bd",
+    "sideBar.border": "#333740",
+    "editor.background": "#202124",
+    "tab.activeBorderTop": "#00ff15",
+    "list.inactiveSelectionBackground": "#333740",
+    "list.inactiveSelectionForeground": "#fa3"
+  }
+}
