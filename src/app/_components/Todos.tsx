@@ -1,12 +1,15 @@
-import { api } from "@/trpc/server";
+"use client";
+
+import { api } from "@/trpc/react";
 import Todo from "./Todo";
 
-export default async function Todos() {
-  const todos = await api.todo.all();
+export default function Todos() {
+  // const todos = await api.todo.all();
+  const { data: todos, isLoading, isError } = api.todo.all.useQuery();
 
-  // if (isLoading) return <div>Loading todos...</div>;
+  if (isLoading) return <div>Loading todos...</div>;
 
-  // if (isError) return <div>Error fetching todos...</div>;
+  if (isError) return <div>Error fetching todos...</div>;
 
   return (
     <>

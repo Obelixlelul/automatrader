@@ -2,8 +2,6 @@ import { getServerAuthSession } from "@/server/auth";
 import Todos from "./_components/Todos";
 import CreateTodo from "./_components/CreateTodo";
 import { Btn } from "./_components/LoginBtn";
-import Image from "next/image";
-import logo from "/public/logo.webp";
 import { Toaster } from "@/components/ui/toaster";
 
 export default async function Home() {
@@ -12,7 +10,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#9bafd9] to-[#103783] text-white">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-        <Image src={logo} alt="logo" width={250} />
+        <h1 className="">Automa.trade - Task Control</h1>
 
         {session && (
           <div className="grid min-w-[600px] grid-cols-1 gap-4 md:gap-8">
