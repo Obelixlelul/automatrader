@@ -3,8 +3,6 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { Toaster } from "@/components/ui/toaster";
-// import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],

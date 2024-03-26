@@ -36,19 +36,8 @@ export default async function Home() {
             {session && <Btn status="logout" />}
           </div>
         </div>
-
-        <CrudShowcase />
       </div>
       <Toaster />
     </main>
   );
-}
-
-async function CrudShowcase() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return null;
-
-  // const latestPost = await api.post.getLatest();
-
-  return <div className="w-full max-w-xs"></div>;
 }

@@ -2,25 +2,51 @@
 
 import { useState } from "react";
 import { todoInput } from "@/types";
-import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function CreateTodo() {
-  const router = useRouter();
   const [newTodo, setNewTodo] = useState<string>("");
   const { toast } = useToast();
   const trpc = api.useUtils();
 
   const createTodo = api.todo.create.useMutation({
-    // onSuccess: () => {
-    //   router.refresh();
-    //   setNewTodo("");
-    //   toast({
-    //     title: "Operaçao realizada com sucesso!",
-    //     description: "Tarefa criada com sucesso.",
-    //   });
-    // },
+    onSuccess: () => {
+      toast({
+        title: "Operaçao realizada com sucesso!",
+        description: "Tarefa criada com sucesso.",
+      });
+    },
+    onMutate: async () => {
+      await trpc.todo.all.cancel();
+
+      const previousTodos = trpc.todo.all.getData();
+
+      trpc.todo.all.setData(undefined, (prev) => {
+        const optmisticTodo = {
+          id: "optimistic-todo-id",
+          text: "placeholder",
+          done: false,
+        };
+
+        if (!prev) return previousTodos;
+        return [...prev, optmisticTodo];
+      });
+
+      setNewTodo("");
+      return { previousTodos };
+    },
+    onError: (err, newTodo, context) => {
+      setNewTodo(newTodo);
+
+      trpc.todo.all.setData(undefined, () => context?.previousTodos);
+
+      toast({
+        title: "Operaçao falhou",
+        description: "Um erro aconteceu ao tentar criar a tarefa.",
+      });
+    },
+
     onSettled: async () => {
       await trpc.todo.all.invalidate();
     },

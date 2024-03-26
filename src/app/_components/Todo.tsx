@@ -22,7 +22,10 @@ export default function Todo({ todo }: TodoProps) {
 
   const deleteTodo = api.todo.delete.useMutation({
     onSuccess: () => {
-      router.refresh();
+      toast({
+        title: "Operaçao realizada com sucesso!",
+        description: "Tarefa excluída com sucesso.",
+      });
     },
 
     onMutate: async (deleteId) => {
@@ -67,7 +70,6 @@ export default function Todo({ todo }: TodoProps) {
 
         return prev.map((t) => {
           if (t.id === id) {
-            console.log("done = ", done);
             return { ...t, done };
           }
           return t;

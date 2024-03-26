@@ -4,12 +4,11 @@ import { api } from "@/trpc/react";
 import Todo from "./Todo";
 
 export default function Todos() {
-  // const todos = await api.todo.all();
   const { data: todos, isLoading, isError } = api.todo.all.useQuery();
 
-  if (isLoading) return <div>Loading todos...</div>;
+  if (isLoading) return <div>Carregando tarefas...</div>;
 
-  if (isError) return <div>Error fetching todos...</div>;
+  if (isError) return <div>Error ao carregar tarefas...</div>;
 
   return (
     <>
@@ -17,7 +16,7 @@ export default function Todos() {
         ? todos.map((todo) => {
             return <Todo key={todo.id} todo={todo} />;
           })
-        : "Create your first todo"}
+        : "Crie sua primeira tarefa."}
     </>
   );
 }
