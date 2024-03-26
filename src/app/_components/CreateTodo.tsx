@@ -25,7 +25,7 @@ export default function CreateTodo() {
       trpc.todo.all.setData(undefined, (prev) => {
         const optmisticTodo = {
           id: "optimistic-todo-id",
-          text: "placeholder",
+          text: newTodo,
           done: false,
         };
 
