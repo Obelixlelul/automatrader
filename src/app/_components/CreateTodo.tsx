@@ -4,6 +4,8 @@ import { useState } from "react";
 import { todoInput } from "@/types";
 import { api } from "@/trpc/react";
 import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function CreateTodo() {
   const [newTodo, setNewTodo] = useState<string>("");
@@ -63,7 +65,8 @@ export default function CreateTodo() {
           if (!result.success) {
             toast({
               title: "Operaçao falhou",
-              description: "Não foi possível criar a tarefa.",
+              description:
+                "O titulo da task deve conter entre 1 e 50 caracteres.",
             });
             return;
           }
@@ -71,7 +74,7 @@ export default function CreateTodo() {
           createTodo.mutate(newTodo);
         }}
       >
-        <input
+        <Input
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           type="text"
           name="new-todo"
@@ -80,9 +83,9 @@ export default function CreateTodo() {
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
         />
-        <button className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto">
+        <Button className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto">
           Create
-        </button>
+        </Button>
       </form>
     </div>
   );

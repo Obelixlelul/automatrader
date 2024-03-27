@@ -9,6 +9,11 @@ export const todoRouter = createTRPCRouter({
         where: {
           userId: ctx.session.user.id,
         },
+        orderBy: [
+          {
+            createdAt: "asc",
+          },
+        ],
       });
 
     return todos.map(({ id, text, done }) => ({ id, text, done }));
