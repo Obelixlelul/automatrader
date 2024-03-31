@@ -13,7 +13,7 @@ export default async function Home() {
         <h1 className="">Automa.trade - Task Control</h1>
 
         {session && (
-          <div className="grid min-w-[600px] grid-cols-1 gap-4 md:gap-8">
+          <div className="grid min-w-[380px] grid-cols-1 gap-4 md:gap-8">
             <div className="flex  flex-col gap-4 rounded-xl bg-white/40 p-4 text-white">
               <h3 className="text-center text-xl font-bold">
                 Lista de tarefas

@@ -125,7 +125,7 @@ export default function Todo({ todo }: TodoProps) {
       )}
 
       <div
-        className={`flex w-full flex-col  items-center justify-between gap-1 rounded-lg bg-white p-2 px-4 hover:bg-slate-50 ${done ? "bg-green-100 hover:bg-green-100" : ""}`}
+        className={`flex w-full flex-col  items-center justify-between gap-1 rounded-lg bg-white p-2 px-4 hover:bg-slate-50 ${done ? "bg-green-200 hover:bg-green-200" : ""}`}
       >
         <div className="flex w-full items-center gap-2 ">
           <Checkbox
@@ -146,7 +146,7 @@ export default function Todo({ todo }: TodoProps) {
         </div>
 
         <div className="flex w-full items-center justify-between ">
-          <div className="tempclass">
+          <div className="flex flex-row items-center gap-2 text-base leading-none">
             <span className="text-center text-xs font-semibold">
               Previsão: {date ?? "Não definida"}
             </span>
