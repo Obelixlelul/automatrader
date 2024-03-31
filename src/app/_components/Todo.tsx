@@ -3,11 +3,32 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import type { Todo } from "@/types";
-import { DeleteFilled } from "@ant-design/icons";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import Alert from "./Alert/Alert";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+/*
+  todo: Usar dialog para editar tarefa
+  todo: datepicker para data limite
+  todo: react for hook mais elabora
+  todo: mais validações com zod
+  // todo: Alert ao excluir
+*/
 
 type TodoProps = {
   todo: Todo;
@@ -17,6 +38,8 @@ export default function Todo({ todo }: TodoProps) {
   const { id, text, done } = todo;
   const router = useRouter();
   const { toast } = useToast();
+  const [openDeleteAlert, setOpenDeleteAlert] = useState<boolean>(false);
+  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
 
   const trpc = api.useUtils();
 
@@ -88,8 +111,71 @@ export default function Todo({ todo }: TodoProps) {
     },
   });
 
+  const editTodo = api.todo.edit.useMutation({
+    onSuccess: () => {
+      // router.refresh();
+    },
+
+    onMutate: async ({ id, text }) => {
+      await trpc.todo.all.cancel();
+
+      const previousTodos = trpc.todo.all.getData();
+
+      trpc.todo.all.setData(undefined, (prev) => {
+        if (!prev) return previousTodos;
+
+        return prev.map((t) => {
+          if (t.id === id) {
+            return { ...t, text };
+          }
+          return t;
+        });
+      });
+
+      return { previousTodos };
+    },
+
+    onError: (wee, newTodo, context) => {
+      toast({
+        title: "Operaçao falhou",
+        description: "Um erro ocorreu ao tentar editar a tarefa.",
+      });
+      trpc.todo.all.setData(undefined, () => context?.previousTodos);
+    },
+  });
+
   return (
     <>
+      {openDeleteAlert && (
+        <Alert
+          description="Ao confirmar você irá deletar a tarefa"
+          title="Tem certeza disso?"
+          open={openDeleteAlert}
+          onOpenChange={setOpenDeleteAlert}
+          cbConfirm={() => deleteTodo.mutate(id)}
+        />
+      )}
+
+      <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edição de tarefa</DialogTitle>
+            <DialogDescription>Altere o título da sua tarefa</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Titulo
+              </Label>
+              <Input id="name" defaultValue={text} className="col-span-3" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit">Salvar alterações</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex w-full items-center justify-between p-2 px-4 hover:bg-white/30">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center gap-2 ">
@@ -111,17 +197,30 @@ export default function Todo({ todo }: TodoProps) {
             </label>
           </div>
         </div>
-        <Button
-          className="w-full rounded-lg bg-blue-700 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
-          onClick={async () => {
-            deleteTodo.mutate(id);
-          }}
-        >
-          {deleteTodo.isPending && (
-            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          {!deleteTodo.isPending && <DeleteFilled />}
-        </Button>
+        <div className="flex gap-1">
+          <Button
+            className="w-full rounded-lg bg-blue-700 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+            onClick={() => {
+              setOpenEditDialog(true);
+            }}
+          >
+            {deleteTodo.isPending && (
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {!deleteTodo.isPending && <EditFilled />}
+          </Button>
+          <Button
+            className="w-full rounded-lg bg-blue-700 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+            onClick={() => {
+              setOpenDeleteAlert(true);
+            }}
+          >
+            {deleteTodo.isPending && (
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {!deleteTodo.isPending && <DeleteFilled />}
+          </Button>
+        </div>
       </div>
     </>
   );

@@ -61,6 +61,9 @@ export const authOptions: NextAuthOptions = {
     //     : {}),
     // }),
   ],
+  session: {
+    maxAge: 30 * 24 * 60 * 60,
+  },
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);

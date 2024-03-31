@@ -4,19 +4,28 @@ import { todoInput } from "@/types";
 
 export const todoRouter = createTRPCRouter({
   all: protectedProcedure.query(async ({ ctx }) => {
-    const todos: { id: string; text: string; done: boolean }[] =
-      await ctx.db.todo.findMany({
-        where: {
-          userId: ctx.session.user.id,
+    const todos: {
+      id: string;
+      text: string;
+      done: boolean;
+      deadline: Date | null;
+    }[] = await ctx.db.todo.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      orderBy: [
+        {
+          createdAt: "asc",
         },
-        orderBy: [
-          {
-            createdAt: "asc",
-          },
-        ],
-      });
+      ],
+    });
 
-    return todos.map(({ id, text, done }) => ({ id, text, done }));
+    return todos.map(({ id, text, done, deadline }) => ({
+      id,
+      text,
+      done,
+      deadline,
+    }));
   }),
 
   create: protectedProcedure
@@ -59,6 +68,24 @@ export const todoRouter = createTRPCRouter({
         },
         data: {
           done,
+        },
+      });
+    }),
+
+  edit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input: { id, text } }) => {
+      return ctx.db.todo.update({
+        where: {
+          id,
+        },
+        data: {
+          text,
         },
       });
     }),

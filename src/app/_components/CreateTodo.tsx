@@ -6,9 +6,21 @@ import { api } from "@/trpc/react";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function CreateTodo() {
-  const [newTodo, setNewTodo] = useState<string>("");
+  // const [newTodo, setNewTodo] = useState<string>("");
   const { toast } = useToast();
   const trpc = api.useUtils();
 
@@ -24,23 +36,23 @@ export default function CreateTodo() {
 
       const previousTodos = trpc.todo.all.getData();
 
+      const formfields = form.getValues();
+
       trpc.todo.all.setData(undefined, (prev) => {
         const optmisticTodo = {
           id: "optimistic-todo-id",
-          text: newTodo,
+          text: formfields.text,
           done: false,
+          deadline: null,
         };
 
         if (!prev) return previousTodos;
         return [...prev, optmisticTodo];
       });
 
-      setNewTodo("");
       return { previousTodos };
     },
     onError: (err, newTodo, context) => {
-      setNewTodo(newTodo);
-
       trpc.todo.all.setData(undefined, () => context?.previousTodos);
 
       toast({
@@ -54,39 +66,53 @@ export default function CreateTodo() {
     },
   });
 
+  const formSchema = z.object({
+    text: z
+      .string()
+      .min(1, { message: "Deve conter ao menos 1 caractere." })
+      .max(50, { message: "Deve conter no máximo 50 caracteres." }),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      text: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    createTodo.mutate(values.text);
+  }
+
   return (
-    <div>
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const result = todoInput.safeParse(newTodo);
+    <Form {...form}>
+      <form className="flex gap-2" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="text"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  placeholder="O titulo da sua tarefa"
+                  {...field}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                />
+              </FormControl>
 
-          if (!result.success) {
-            toast({
-              title: "Operaçao falhou",
-              description:
-                "O titulo da task deve conter entre 1 e 50 caracteres.",
-            });
-            return;
-          }
-
-          createTodo.mutate(newTodo);
-        }}
-      >
-        <Input
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-          type="text"
-          name="new-todo"
-          id="new-todo"
-          placeholder="Nova tarefa..."
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Button className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto">
-          Create
+
+        <Button
+          type="submit"
+          className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+        >
+          Criar
         </Button>
       </form>
-    </div>
+    </Form>
   );
 }

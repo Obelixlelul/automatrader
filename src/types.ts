@@ -9,7 +9,7 @@ export type Todo = allTodosOutputs[number];
 
 export const todoInput = z
   .string({
-    required_error: "Descreva sua tarefa.",
+    required_error: "Descreva sua tarefa como um texto.",
   })
   .min(1, { message: "A descrição deve ter no mínimo 1 caracteres." })
   .max(50, { message: "A descrição deve ter no máximo 50 caracteres." });
