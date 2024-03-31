@@ -8,7 +8,7 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#9bafd9] to-[#103783] text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-600 text-white">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="">Automa.trade - Task Control</h1>
 
@@ -18,12 +18,8 @@ export default async function Home() {
               <h3 className="text-center text-xl font-bold">
                 Lista de tarefas
               </h3>
-              <div className="flex h-[200px] flex-col gap-1 overflow-y-auto">
-                <div className="flex items-center justify-between bg-slate-200 px-4 text-center font-black text-neutral-950">
-                  <div className="w-24 text-center">#tarefa</div>
-                  <div className="w-24 text-center">Data limite:</div>
-                  <div className="w-20 text-center">Ações</div>
-                </div>
+
+              <div className="flex h-[400px] flex-col gap-1 overflow-y-auto px-2">
                 <Todos />
               </div>
               <CreateTodo />

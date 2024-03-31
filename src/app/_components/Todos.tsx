@@ -11,12 +11,12 @@ export default function Todos() {
   if (isError) return <div>Error ao carregar tarefas...</div>;
 
   return (
-    <>
+    <div className="flex flex-col gap-2  text-black">
       {todos?.length
         ? todos.map((todo) => {
             return <Todo key={todo.id} todo={todo} />;
           })
         : "Crie sua primeira tarefa."}
-    </>
+    </div>
   );
 }

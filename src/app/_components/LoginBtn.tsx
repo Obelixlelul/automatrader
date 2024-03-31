@@ -25,7 +25,7 @@ function LoginBtn() {
   return (
     <div>
       <Button
-        className="flex w-full gap-2 rounded-lg bg-blue-700 px-2 py-1 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+        className="flex w-full gap-2 rounded-lg bg-black px-2 py-1 text-center text-sm font-medium text-white hover:bg-neutral-800 focus:outline-none focus:ring-4 focus:ring-neutral-300 dark:bg-neutral-600 dark:hover:bg-neutral-700 dark:focus:ring-neutral-800 sm:w-auto"
         onClick={() => handleLoading()}
       >
         {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
@@ -41,7 +41,7 @@ function LogoutBtn() {
   return (
     <div>
       <Button
-        className="flex w-full gap-2 rounded-lg bg-blue-700 px-2 py-1 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+        className="flex w-full gap-2 rounded-lg bg-black px-2 py-1 text-center text-sm font-medium text-white hover:bg-neutral-800 focus:outline-none focus:ring-4 focus:ring-neutral-300 dark:bg-neutral-600 dark:hover:bg-neutral-700 dark:focus:ring-neutral-800 sm:w-auto"
         onClick={async () => {
           setLoading(true);
           await signOut();

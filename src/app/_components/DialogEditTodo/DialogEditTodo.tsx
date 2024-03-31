@@ -157,7 +157,7 @@ export default function DialogEditTodo({
               control={form.control}
               name="deadline"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem className="flex w-full flex-col">
                   <FormLabel>Data limite</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -193,7 +193,7 @@ export default function DialogEditTodo({
             <DialogFooter>
               <Button
                 type="submit"
-                className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+                className="mt-2 w-full rounded-lg bg-black px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-neutral-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-neutral-700 dark:focus:ring-neutral-800 sm:w-auto"
               >
                 Salvar alterações
               </Button>

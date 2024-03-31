@@ -33,6 +33,7 @@
     "@trpc/react-query": "next",
     "@trpc/server": "next",
     "@vercel/postgres": "^0.7.2",
+    "antd": "^5.16.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.6.0",

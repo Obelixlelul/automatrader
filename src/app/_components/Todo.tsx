@@ -1,25 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import type { Todo } from "@/types";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ReloadIcon } from "@radix-ui/react-icons";
 import Alert from "./Alert/Alert";
 import { useState } from "react";
 import DialogEditTodo from "./DialogEditTodo/DialogEditTodo";
-import { compareAsc, format, isPast, parse } from "date-fns";
+import { format, isPast, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
-/*
-  todo: Usar dialog para editar tarefa
-  todo: datepicker para data limite
-  todo: react for hook mais elabora
-  todo: mais validações com zod
-  // todo: Alert ao excluir
-*/
 
 type TodoProps = {
   todo: Todo;
@@ -135,55 +125,59 @@ export default function Todo({ todo }: TodoProps) {
       )}
 
       <div
-        className={`flex w-full items-center justify-between p-2 px-4 
-        hover:bg-white/30 ${taskLate() ? "bg-red-400" : ""}`}
+        className={`flex w-full flex-col  items-center justify-between gap-1 rounded-lg bg-white p-2 px-4 hover:bg-slate-50 ${done ? "bg-green-300 hover:bg-green-300" : ""}`}
       >
-        <div className="flex w-28 items-center gap-2">
-          <div className="flex items-center justify-center gap-2 ">
-            <Checkbox
-              className="focus:ring-3 h-4 w-4 cursor-pointer rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-              name="done"
-              id="done"
-              checked={done}
-              onCheckedChange={(checked) => {
-                toggleTodo.mutate({ id, done: checked as boolean });
-              }}
-            />
+        <div className="flex w-full items-center gap-2 ">
+          <Checkbox
+            className="focus:ring-3 h-4 w-4 cursor-pointer rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            name="done"
+            id="done"
+            checked={done}
+            onCheckedChange={(checked) => {
+              toggleTodo.mutate({ id, done: checked as boolean });
+            }}
+          />
 
-            <label
-              htmlFor="done"
-              className={`cursos-pointer ${done ? "line-through" : ""}`}
-            >
-              {text}
-            </label>
-          </div>
+          <span
+            className={`cursos-pointer ${done ? "line-through" : ""} break-all`}
+          >
+            {text}
+          </span>
         </div>
 
-        <span className="w-28  text-center">{date}</span>
+        <div className="flex w-full items-center justify-between ">
+          <div className="tempclass">
+            <span className="text-center text-xs font-semibold">
+              Previsão: {date ?? "Não definida"}
+            </span>
+            <span className="text-red-600">
+              {taskLate() && <span className="text-xs">(atrasado)</span>}
+            </span>
+          </div>
 
-        <div className="flex gap-1">
-          <Button
-            className="w-full rounded-lg bg-blue-700 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
-            onClick={() => {
-              setOpenEditDialog(true);
-            }}
-          >
-            {deleteTodo.isPending && (
-              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            {!deleteTodo.isPending && <EditFilled />}
-          </Button>
-          <Button
-            className="w-full rounded-lg bg-blue-700 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
-            onClick={() => {
-              setOpenDeleteAlert(true);
-            }}
-          >
-            {deleteTodo.isPending && (
-              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            {!deleteTodo.isPending && <DeleteFilled />}
-          </Button>
+          <div className="align-center  flex justify-end  gap-1">
+            <span
+              onClick={() => {
+                setOpenEditDialog(true);
+              }}
+              className="flex cursor-pointer items-center justify-center text-base leading-none hover:text-neutral-700"
+            >
+              Editar
+            </span>
+
+            <span className="flex cursor-pointer items-center justify-center text-base leading-none">
+              |
+            </span>
+
+            <span
+              onClick={() => {
+                setOpenDeleteAlert(true);
+              }}
+              className="flex cursor-pointer items-center justify-center text-base leading-none hover:text-neutral-700"
+            >
+              Excluir
+            </span>
+          </div>
         </div>
       </div>
     </>

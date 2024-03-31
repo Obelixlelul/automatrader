@@ -14,10 +14,25 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { text } from "stream/consumers";
 
 export default function CreateTodo() {
   const { toast } = useToast();
   const trpc = api.useUtils();
+
+  const formSchema = z.object({
+    text: z
+      .string()
+      .min(1, { message: "Deve conter ao menos 1 caractere." })
+      .max(50, { message: "Deve conter no máximo 50 caracteres." }),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      text: "",
+    },
+  });
 
   const createTodo = api.todo.create.useMutation({
     onSuccess: () => {
@@ -25,6 +40,7 @@ export default function CreateTodo() {
         title: "Operaçao realizada com sucesso!",
         description: "Tarefa criada com sucesso.",
       });
+      form.reset();
     },
     onMutate: async () => {
       await trpc.todo.all.cancel();
@@ -60,32 +76,18 @@ export default function CreateTodo() {
     },
   });
 
-  const formSchema = z.object({
-    text: z
-      .string()
-      .min(1, { message: "Deve conter ao menos 1 caractere." })
-      .max(50, { message: "Deve conter no máximo 50 caracteres." }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      text: "",
-    },
-  });
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     createTodo.mutate(values.text);
   }
 
   return (
     <Form {...form}>
-      <form className="flex gap-2" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex gap-2 " onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="text"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormControl>
                 <Input
                   placeholder="O titulo da sua tarefa"
@@ -101,7 +103,7 @@ export default function CreateTodo() {
 
         <Button
           type="submit"
-          className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+          className="w-full rounded-lg bg-black px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-neutral-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-neutral-700 dark:focus:ring-blue-800 sm:w-auto"
         >
           Criar
         </Button>
