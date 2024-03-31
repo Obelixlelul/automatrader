@@ -11,7 +11,8 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import Alert from "./Alert/Alert";
 import { useState } from "react";
 import DialogEditTodo from "./DialogEditTodo/DialogEditTodo";
-
+import { compareAsc, format, isPast, parse } from "date-fns";
+import { ptBR } from "date-fns/locale";
 /*
   todo: Usar dialog para editar tarefa
   todo: datepicker para data limite
@@ -25,7 +26,7 @@ type TodoProps = {
 };
 
 export default function Todo({ todo }: TodoProps) {
-  const { id, text, done } = todo;
+  const { id, text, done, deadline } = todo;
   const router = useRouter();
   const { toast } = useToast();
   const [openDeleteAlert, setOpenDeleteAlert] = useState<boolean>(false);
@@ -101,6 +102,16 @@ export default function Todo({ todo }: TodoProps) {
     },
   });
 
+  const date = deadline ? format(deadline, "P", { locale: ptBR }) : null;
+
+  const taskLate = () => {
+    if (date) {
+      const parsedDate = parse(date, "dd/MM/yyyy", new Date());
+      return isPast(parsedDate);
+    }
+    return null;
+  };
+
   return (
     <>
       {openDeleteAlert && (
@@ -113,15 +124,21 @@ export default function Todo({ todo }: TodoProps) {
         />
       )}
 
-      <DialogEditTodo
-        id={id}
-        text={text}
-        open={openEditDialog}
-        onOpenChange={setOpenEditDialog}
-      />
+      {openEditDialog && (
+        <DialogEditTodo
+          id={id}
+          text={text}
+          open={openEditDialog}
+          onOpenChange={setOpenEditDialog}
+          deadline={deadline}
+        />
+      )}
 
-      <div className="flex w-full items-center justify-between p-2 px-4 hover:bg-white/30">
-        <div className="flex items-center gap-2">
+      <div
+        className={`flex w-full items-center justify-between p-2 px-4 
+        hover:bg-white/30 ${taskLate() ? "bg-red-400" : ""}`}
+      >
+        <div className="flex w-28 items-center gap-2">
           <div className="flex items-center justify-center gap-2 ">
             <Checkbox
               className="focus:ring-3 h-4 w-4 cursor-pointer rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -141,6 +158,9 @@ export default function Todo({ todo }: TodoProps) {
             </label>
           </div>
         </div>
+
+        <span className="w-28  text-center">{date}</span>
+
         <div className="flex gap-1">
           <Button
             className="w-full rounded-lg bg-blue-700 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"

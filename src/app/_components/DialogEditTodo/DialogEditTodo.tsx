@@ -36,13 +36,14 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/components/ui/calendar";
-import { pt, ptBR } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 
 type DialogEditTodoProps = {
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
   text: string;
   id: string;
+  deadline: Date | null;
 };
 
 export default function DialogEditTodo({
@@ -50,6 +51,7 @@ export default function DialogEditTodo({
   onOpenChange,
   text,
   id,
+  deadline,
 }: DialogEditTodoProps) {
   const trpc = api.useUtils();
   const { toast } = useToast();
@@ -94,12 +96,10 @@ export default function DialogEditTodo({
   const onSubmitEditTask = () => {
     const values = form.getValues();
 
-    console.log("values = ", values);
+    const text = values.text;
+    const deadline = values.deadline;
 
-    // const text = values.text;
-    // const deadline = values.deadline;
-
-    // editTodo.mutate({ id, text: values.text, deadline });
+    editTodo.mutate({ id, text, deadline });
   };
 
   const formSchema = z.object({
@@ -113,7 +113,7 @@ export default function DialogEditTodo({
     resolver: zodResolver(formSchema),
     defaultValues: {
       text: text,
-      deadline: null,
+      deadline: deadline,
     },
   });
 
@@ -121,7 +121,6 @@ export default function DialogEditTodo({
     <Dialog
       open={open}
       onOpenChange={() => {
-        form.reset();
         onOpenChange(false);
       }}
     >
@@ -181,9 +180,6 @@ export default function DialogEditTodo({
                         mode="single"
                         selected={field.value ?? undefined}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
                         locale={ptBR}
                         initialFocus
                       />

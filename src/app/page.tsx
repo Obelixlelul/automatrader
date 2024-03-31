@@ -19,6 +19,11 @@ export default async function Home() {
                 Lista de tarefas
               </h3>
               <div className="flex h-[200px] flex-col gap-1 overflow-y-auto">
+                <div className="flex items-center justify-between bg-slate-200 px-4 text-center font-black text-neutral-950">
+                  <div className="w-24 text-center">#tarefa</div>
+                  <div className="w-24 text-center">Data limite:</div>
+                  <div className="w-20 text-center">Ações</div>
+                </div>
                 <Todos />
               </div>
               <CreateTodo />
