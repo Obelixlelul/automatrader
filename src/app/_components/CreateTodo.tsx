@@ -40,7 +40,6 @@ export default function CreateTodo() {
         title: "Operaçao realizada com sucesso!",
         description: "Tarefa criada com sucesso.",
       });
-      form.reset();
     },
     onMutate: async () => {
       await trpc.todo.all.cancel();
@@ -58,6 +57,7 @@ export default function CreateTodo() {
         };
 
         if (!prev) return previousTodos;
+        form.reset();
         return [...prev, optmisticTodo];
       });
 

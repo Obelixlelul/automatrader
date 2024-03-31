@@ -9,21 +9,17 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-slate-600 text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+      <div className="container flex flex-col items-center justify-center gap-12 py-16">
         <h1 className="">Automa.trade - Task Control</h1>
 
         {session && (
-          <div className="grid min-w-[380px] grid-cols-1 gap-4 md:gap-8">
-            <div className="flex  flex-col gap-4 rounded-xl bg-white/40 p-4 text-white">
-              <h3 className="text-center text-xl font-bold">
-                Lista de tarefas
-              </h3>
+          <div className="container  mx-auto flex flex-col gap-6 rounded-lg bg-slate-400 px-6 py-6">
+            <h3 className="text-center text-xl font-bold">Lista de tarefas</h3>
 
-              <div className="flex h-[400px] flex-col gap-1 overflow-y-auto px-2">
-                <Todos />
-              </div>
-              <CreateTodo />
+            <div className="flex h-[400px] flex-col gap-1 overflow-y-auto px-2">
+              <Todos />
             </div>
+            <CreateTodo />
           </div>
         )}
 

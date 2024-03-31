@@ -125,7 +125,7 @@ export default function Todo({ todo }: TodoProps) {
       )}
 
       <div
-        className={`flex w-full flex-col  items-center justify-between gap-1 rounded-lg bg-white p-2 px-4 hover:bg-slate-50 ${done ? "bg-green-200 hover:bg-green-200" : ""}`}
+        className={`flex w-full flex-col  items-center justify-between gap-1 rounded-lg bg-white p-2 px-4 hover:bg-slate-50 ${done && "bg-green-300 hover:bg-green-300"}`}
       >
         <div className="flex w-full items-center gap-2 ">
           <Checkbox
