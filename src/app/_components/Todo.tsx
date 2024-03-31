@@ -10,17 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Alert from "./Alert/Alert";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import DialogEditTodo from "./DialogEditTodo/DialogEditTodo";
 
 /*
   todo: Usar dialog para editar tarefa
@@ -111,39 +101,6 @@ export default function Todo({ todo }: TodoProps) {
     },
   });
 
-  const editTodo = api.todo.edit.useMutation({
-    onSuccess: () => {
-      // router.refresh();
-    },
-
-    onMutate: async ({ id, text }) => {
-      await trpc.todo.all.cancel();
-
-      const previousTodos = trpc.todo.all.getData();
-
-      trpc.todo.all.setData(undefined, (prev) => {
-        if (!prev) return previousTodos;
-
-        return prev.map((t) => {
-          if (t.id === id) {
-            return { ...t, text };
-          }
-          return t;
-        });
-      });
-
-      return { previousTodos };
-    },
-
-    onError: (wee, newTodo, context) => {
-      toast({
-        title: "Operaçao falhou",
-        description: "Um erro ocorreu ao tentar editar a tarefa.",
-      });
-      trpc.todo.all.setData(undefined, () => context?.previousTodos);
-    },
-  });
-
   return (
     <>
       {openDeleteAlert && (
@@ -156,25 +113,12 @@ export default function Todo({ todo }: TodoProps) {
         />
       )}
 
-      <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edição de tarefa</DialogTitle>
-            <DialogDescription>Altere o título da sua tarefa</DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Titulo
-              </Label>
-              <Input id="name" defaultValue={text} className="col-span-3" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Salvar alterações</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DialogEditTodo
+        id={id}
+        text={text}
+        open={openEditDialog}
+        onOpenChange={setOpenEditDialog}
+      />
 
       <div className="flex w-full items-center justify-between p-2 px-4 hover:bg-white/30">
         <div className="flex items-center gap-2">

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { todoInput } from "@/types";
 import { api } from "@/trpc/react";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
@@ -12,15 +10,12 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
 export default function CreateTodo() {
-  // const [newTodo, setNewTodo] = useState<string>("");
   const { toast } = useToast();
   const trpc = api.useUtils();
 
@@ -60,7 +55,6 @@ export default function CreateTodo() {
         description: "Um erro aconteceu ao tentar criar a tarefa.",
       });
     },
-
     onSettled: async () => {
       await trpc.todo.all.invalidate();
     },
@@ -81,7 +75,6 @@ export default function CreateTodo() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     createTodo.mutate(values.text);
   }
 

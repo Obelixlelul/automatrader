@@ -77,15 +77,17 @@ export const todoRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         text: z.string(),
+        deadline: z.date().nullable(),
       }),
     )
-    .mutation(async ({ ctx, input: { id, text } }) => {
+    .mutation(async ({ ctx, input: { id, text, deadline } }) => {
       return ctx.db.todo.update({
         where: {
           id,
         },
         data: {
           text,
+          deadline,
         },
       });
     }),
